@@ -11,12 +11,12 @@
     ]
 </script>
 
-<h1>
+<h1 class="text-5xl">
     DESIGN IN JANUARY?!
 </h1>
 
-<nav>
-    <ul>
+<nav class="my-5">
+    <ul class="flex gap-5">
         {#each weeks as { name, href }}
         <li>
             <a href={`/january/${href}`}>Week {name}</a>
