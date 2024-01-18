@@ -18,7 +18,7 @@
 <nav class="my-5">
     <ul class="flex gap-5">
         {#each weeks as { name, href }}
-        <li>
+        <li class="relative overflow-hidden">
             <a href={`/january/${href}`}>Week {name}</a>
         </li>
         {/each}
@@ -26,3 +26,9 @@
 </nav>
 
 <slot/>
+
+<style>
+
+    
+    
+</style>

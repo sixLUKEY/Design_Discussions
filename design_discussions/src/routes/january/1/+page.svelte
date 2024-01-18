@@ -1,13 +1,57 @@
 <script>
 	import { fade, fly, slide } from 'svelte/transition';
 	import myImage from '$lib/screenshot.png?enhanced';
+	import { onMount } from 'svelte';
 
 	let clicked = false;
 	let alsoClicked = false;
 	let clickedAgain = false;
-    let hovered = false;
-    let alsoHovered = false;
+	let hovered = false;
+	let alsoHovered = false;
 
+	let count = 0;
+	let completed = false;
+
+	let characters = ['🎊', '🥳', '🎉', '🍥', '👏', '🍾', '🦞', '🎈'];
+
+	let confetti = new Array(200)
+		.fill()
+		.map((_, i) => {
+			return {
+				character:
+					characters[i % characters.length],
+				x: Math.random() * 100,
+				y: -20 - Math.random() * 100,
+				r: 0.1 + Math.random() * 1
+			};
+		})
+		.sort((a, b) => a.r - b.r);
+
+	onMount(() => {
+		let frame;
+
+		function loop() {
+			frame = requestAnimationFrame(loop);
+
+			confetti = confetti.map((emoji) => {
+				emoji.y += 0.3 * emoji.r;
+				if (emoji.y > 150) emoji.y = -20;
+				return emoji;
+			});
+		}
+
+		loop();
+
+		return () => cancelAnimationFrame(frame);
+	});
+
+	function increment() {
+		console.log(count);
+		if (count >= 10) {
+			alert('GEEZ MAN YOUR CONTENT IS DOWNLOADING OKAY!!!!');
+		}
+		return (count += 1);
+	}
 </script>
 
 <h1 in:fly={{ duration: 1200 }} class="text-7xl">FEEDBACK!!!!</h1>
@@ -53,17 +97,63 @@
 		But i prefer to explain it as something which has notified you about another
 	</p>
 
-    <p transition:fade={{delay: 800}} class="text-2xl my-5">
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        For example, how do i know i am saving my content <span on:mouseenter={() => hovered = !hovered}>right</span> {#if hovered}
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <span on:mouseenter={() => alsoHovered = !alsoHovered}>about</span>
-        {/if}  {#if alsoHovered}
-             <button class=" cursor-wait">now???</button>
-        {/if} 
-    </p>
+	<p transition:fade={{ delay: 800 }} class="text-2xl my-5">
+		<!-- svelte-ignore a11y-no-static-element-interactions -->
+		For example, how do i know i am downloading my content
+		<span on:mouseenter={() => (hovered = !hovered)}>right</span>
+		{#if hovered}
+			<!-- svelte-ignore a11y-no-static-element-interactions -->
+			<span on:mouseenter={() => (alsoHovered = !alsoHovered)}>about</span>
+		{/if}
+		{#if alsoHovered}
+			<button on:click={increment}>now???</button>
+		{/if}
+	</p>
+
+	<a
+		transition:fade={{ delay: 1200 }}
+		href="https://keep.google.com/u/0/#label/Design%20Discussions"
+		class=" decoration-transparent transition hover:text-red-500"
+		target="_blank"
+		>Let's check out some of the notes!</a
+	>
 {/if}
 
-<div class="min-h-64">
+<div class="min-h-64"></div>
 
-</div>
+<h1 class="my-5 text-3xl">Few last thoughts</h1>
+
+<ul class=" list-disc text-xl">
+	<li>Haptic feedback</li>
+	<li>feedback in terms of surveys</li>
+	<li>the importance of feedback in design and in todays world</li>
+	<li>everything in this world relies on feedback</li>
+</ul>
+
+<button
+	on:click={() => (completed = !completed)}
+	class=" bg-orange-400 transition hover:bg-orange-600 rounded-sm px-5 py-2 text-white hover:scale-110 my-10"
+>
+	AND WE'RE DONE!!!! YAYYYY
+</button>
+
+{#if completed}
+{#each confetti as c}
+	<span class="confetti" style="left: {c.x}%; top: {c.y}%; transform: scale({c.r})">
+		{c.character}
+	</span>
+{/each}
+{/if}
+
+
+<style>
+	:global(body) {
+		overflow-x: hidden;
+	}
+
+	.confetti {
+		position: absolute;
+		font-size: 5vw;
+		user-select: none;
+	}
+</style>
